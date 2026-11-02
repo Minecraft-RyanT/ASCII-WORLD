@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII WORLD</title>
+    <style>
+        /* Base page layout - clean white background by default */
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 40px;
+            line-height: 1.4;
+            max-width: 900px;
+            margin: 0 auto;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Perfectly preserves ASCII art character alignment grids */
+        pre {
+            background-color: #f6f8fa;
+            color: #24292e;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #d1d5da;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            border-bottom: 2px dashed #d1d5da;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        h4 {
+            margin-top: 25px;
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-style: italic;
+        }
+
+        /* Customizer management control panel setup */
+        #customizer-panel {
+            display: none;
+            background-color: #f0f0f0;
+            border: 2px dashed #000000;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            color: #000000;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: inline-block;
+            width: 180px;
+            vertical-align: top;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        input[type="color"], select, input[type="text"], textarea {
+            padding: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #000000;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        input[type="text"], textarea {
+            width: 60%;
+        }
+
+        textarea {
+            height: 120px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        #admin-section {
+            margin-top: 50px;
+            border-top: 1px solid #e1e4e8;
+            padding-top: 20px;
+        }
+
+        .admin-btn {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            padding: 5px 10px;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .admin-btn:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .creator-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+        }
+
+        .delete-flag {
+            color: #ff7b72;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .delete-flag:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>INTRODUCTION</h1>
+<pre>
+ ___     ___      ______      ___        ___        __________      __
+|   |   |   |    |  ____|    |   |      |   |      |    __    |    |  |
+|   |___|   |    |  |____    |   |      |   |      |   |  |   |    |  |
+|    ___    |    |  ____|    |   |      |   |      |   |  |   |    |__|
+|   |   |   |    |  |____    |   |___   |   |___   |   |__|   |     __
+|___|   |___|    |______|    |______|   |_______|  |__________|    |__|
+
+</pre>
+
+<p>Welcome to ASCII WORLD! Here, there will be a lot of ASCII stuff! Explore below! If you want to add any of your own ASCII art, please add it in the PENDING place and I will check it out!</p>
+
+<!-- DYNAMIC CONTENT MAP BUFFER FIELD -->
+<div id="dynamic-content-area"></div>
+
+
+<!-- PASSWORD SYSTEM INTERFACE -->
+<div id="admin-section">
+    <div id="lock-interface">
+        <label for="password-input">Enter Admin Password:</label>
+        <input type="password" id="password-input" style="font-family: monospace; padding: 4px;">
+        <button class="admin-btn" onclick="checkPassword()">Unlock Customizer</button>
+    </div>
+    <p id="password-error" style="color: red; font-style: normal; display: none;">❌ Incorrect password, try again!</p>
+</div>
+
+
+<!-- HIDDEN ADMIN ENGINE CONSOLE DIALOG -->
+<!-- HIDDEN CUSTOMIZER PANEL -->
+<div id="customizer-panel">
+    <h3>🛠️ Website Customizer & Creator Panel</h3>
+    <p style="font-style: normal; color: #555;">You have unlocked admin control. Modify colors or inject content to your world:</p>
+
+    <div class="control-group">
+        <label for="bg-color-picker">Background Color:</label>
+        <input type="color" id="bg-color-picker" value="#ffffff" oninput="updateBackground(this.value)">
+    </div>
+
+    <div class="control-group">
+        <label for="text-color-picker">Text Color:</label>
+        <input type="color" id="text-color-picker" value="#000000" oninput="updateText(this.value)">
+    </div>
+
+    <div class="control-group">
+        <label for="box-color-picker">ASCII Box Style:</label>
+        <select id="box-color-picker" onchange="updateBoxStyle(this.value)">
+            <option value="light">Classic Gray Box</option>
+            <option value="dark">Retro Cyber Box</option>
+            <option value="invisible">Clean Invisible Borders</option>
+        </select>
+    </div>
+
+    <!-- CREATOR TOOLS -->
+    <div class="creator-section">
+        <h4>✨ Content Injection Panel</h4>
+        
+        <!-- Insertion Position Picker -->
+        <div class="control-group">
+            <label for="insert-position-picker">Insert Position:</label>
+            <select id="insert-position-picker">
+                <option value="append">At the very end (Bottom)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="big-header-input">Enter Big Header (e.g. NATURE):</label>
+            <input type="text" id="big-header-input" placeholder="Type a big title...">
+            <button class="admin-btn" onclick="injectSpecificHeader('big-header-input', 'big')">ADD</button>
+        </div>
+
+        <div class="control-group">
+            <label for="medium-header-input">Enter Medium Header (e.g. Animals):</label>
+            <input type="text" id="medium-header-input" placeholder="Type a medium title...">
+            <button class="admin-btn" onclick="injectSpecificHeader('medium-header-input', 'medium')">ADD</button>
+        </div>
+
+        <div class="control-group">
+            <label for="small-header-input">Enter Small Header (e.g. Cat):</label>
+            <input type="text" id="small-header-input" placeholder="Type a small title...">
+            <button class="admin-btn" onclick="injectSpecificHeader('small-header-input', 'small')">ADD</button>
+        </div>
+
+        <!-- ART INPUT WITH DESCRIPTION & BUTTON FIXED -->
+        <div class="control-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dotted #ccc;">
+            <label for="art-textarea">Paste ASCII Art:</label>
+            <textarea id="art-textarea" placeholder="Paste your block configuration here..."></textarea>
+        </div>
+
+        <div class="control-group">
+            <label for="art-desc-input">Art Description:</label>
+            <input type="text" id="art-desc-input" placeholder="e.g., A cozy little cat relaxing...">
+            <button class="admin-btn" onclick="injectArt()">ADD ART</button>
+        </div>
+        
+        <br><br>
+        <button class="admin-btn" style="background-color: #ff7b72; color: white; border: none;" onclick="clearAllData()">⚠️ Reset/Wipe Added Art</button>
+    </div>
+    
+    <br>
+    <button class="admin-btn" onclick="lockPanel()">Lock Changes</button>
+</div>
+
+
+<script>
+    const SECRET_PASSWORD = "albert123";
+    let worldData = JSON.parse(localStorage.getItem('ascii_world_data')) || [];
+
+    // Load saved content automatically when the page starts up
+    window.onload = function() {
+        renderContent();
+    };
+
+    /* Content Creation Core Logic with Position Sorting & Descriptions */
+    function renderContent() {
+        const displayArea = document.getElementById("dynamic-content-area");
+        displayArea.innerHTML = ""; 
+
+        const isCurrentlyAdmin = document.getElementById("customizer-panel").style.display === "block";
+        const posPicker = document.getElementById("insert-position-picker");
+        posPicker.innerHTML = '<option value="append">At the very end (Bottom)</option>';
+
+        worldData.forEach((item, index) => {
+            const labelText = item.type === "header" ? `Header: ${item.value}` : `ASCII Art (Block #${index + 1})`;
+            posPicker.innerHTML += `<option value="${index}">Before: ${labelText}</option>`;
+
+            const itemContainer = document.createElement("div");
+            itemContainer.style.position = "relative";
+            itemContainer.style.marginBottom = "30px";
+
+            if (item.type === "header") {
+                let headerElement;
+                if (item.size === "medium") {
+                    headerElement = document.createElement("h2");
+                    headerElement.style.borderBottom = "1px dashed #d1d5da";
+                } else if (item.size === "small") {
+                    headerElement = document.createElement("h3");
+                } else {
+                    headerElement = document.createElement("h1");
+                    headerElement.style.borderBottom = "2px dashed #d1d5da";
+                }
+                headerElement.textContent = item.value;
+                itemContainer.appendChild(headerElement);
+            } else if (item.type === "art") {
+                const pre = document.createElement("pre");
+                pre.textContent = item.value;
+                itemContainer.appendChild(pre);
+
+                if (item.description && item.description.trim() !== "") {
+                    const descPara = document.createElement("p");
+                    descPara.style.fontStyle = "italic";
+                    descPara.style.margin = "8px 0 12px 10px";
+                    descPara.textContent = item.description;
+                    itemContainer.appendChild(descPara);
+                }
+            }
+
+            if (isCurrentlyAdmin) {
+                const controlsWrapper = document.createElement("div");
+                controlsWrapper.style.marginTop = "5px";
+
+                const editBtn = document.createElement("span");
+                editBtn.innerHTML = "[Change This] ";
+                editBtn.style.color = "#58a6ff";
+                editBtn.style.cursor = "pointer";
+                editBtn.style.fontSize = "12px";
+                editBtn.style.fontFamily = "monospace";
+                editBtn.style.marginRight = "10px";
+                editBtn.onclick = function() {
+                    changeItem(index);
+                };
+
+                const delBtn = document.createElement("span");
+                delBtn.innerHTML = "[Delete This Item]";
+                delBtn.style.color = "#ff7b72";
+                delBtn.style.cursor = "pointer";
+                delBtn.style.fontSize = "12px";
+                delBtn.style.fontFamily = "monospace";
+                delBtn.onclick = function() {
+                    deleteItem(index);
+                };
+
+                controlsWrapper.appendChild(editBtn);
+                controlsWrapper.appendChild(delBtn);
+                itemContainer.appendChild(controlsWrapper);
+            }
+
+            displayArea.appendChild(itemContainer);
+        });
+        
+        updateBoxStyle(document.getElementById("box-color-picker").value);
+    }
+
+    function injectSpecificHeader(inputId, sizeType) {
+        const inputElement = document.getElementById(inputId);
+        const titleValue = inputElement.value.trim();
+        if (!titleValue) return;
+
+        const targetPos = document.getElementById("insert-position-picker").value;
+        const newHeader = { type: "header", value: titleValue, size: sizeType };
+
+        if (targetPos === "append") {
+            worldData.push(newHeader);
+        } else {
+            worldData.splice(parseInt(targetPos), 0, newHeader);
+        }
+
+        localStorage.setItem('ascii_world_data', JSON.stringify(worldData));
+        inputElement.value = ""; 
+        renderContent();
+    }
+
+    function injectArt() {
+        const artCode = document.getElementById("art-textarea").value;
+        const artDesc = document.getElementById("art-desc-input").value.trim();
+        if (!artCode) return;
+
+        const targetPos = document.getElementById("insert-position-picker").value;
+        const newArt = { type: "art", value: artCode, description: artDesc };
+
+        if (targetPos === "append") {
+            worldData.push(newArt);
+        } else {
+            worldData.splice(parseInt(targetPos), 0, newArt);
+        }
+
+        localStorage.setItem('ascii_world_data', JSON.stringify(worldData));
+        document.getElementById("art-textarea").value = "";
+        document.getElementById("art-desc-input").value = "";
+        renderContent();
+    }
+
+    function changeItem(index) {
+        const item = worldData[index];
+        if (item.type === "header") {
+            const updatedText = prompt("Update your header text:", item.value);
+            if (updatedText === null) return;
+            if (updatedText.trim() !== "") item.value = updatedText.trim();
+        } else if (item.type === "art") {
+            const updateChoice = confirm("Click OK to change the ASCII drawing lines, or Cancel to update just the Description.");
+            if (updateChoice) {
+                const updatedArt = prompt("Paste your updated raw ASCII art lines here:", item.value);
+                if (updatedArt !== null && updatedArt.trim() !== "") item.value = updatedArt;
+            } else {
+                const updatedDesc = prompt("Update your italic description text:", item.description || "");
+                if (updatedDesc !== null) item.description = updatedDesc.trim();
+            }
+        }
+        localStorage.setItem('ascii_world_data', JSON.stringify(worldData));
+        renderContent();
+    }
+
+    function deleteItem(index) {
+        const isCurrentlyAdmin = document.getElementById("customizer-panel").style.display === "block";
+        if (!isCurrentlyAdmin) return;
+        worldData.splice(index, 1); 
+        localStorage.setItem('ascii_world_data', JSON.stringify(worldData));
+        renderContent();
+    }
+
+    function clearAllData() {
+        if (confirm("Are you sure you want to clear out all the headers and animals you've added?")) {
+            localStorage.removeItem('ascii_world_data');
+            worldData = [];
+            renderContent();
+        }
+    }
+
+    function updateBackground(color) {
+        document.body.style.backgroundColor = color;
+    }
+
+    function updateText(color) {
+        document.body.style.color = color;
+    }
+
+    function updateBoxStyle(styleType) {
+        const boxes = document.querySelectorAll("pre");
+        if (styleType === "dark") {
+            document.body.style.backgroundColor = "#0d1117";
+            document.body.style.color = "#58a6ff";
+        } else if (styleType === "light" || styleType === "invisible") {
+            document.body.style.backgroundColor = "#ffffff";
+            document.body.style.color = "#000000";
+        }
+        boxes.forEach(box => {
+            if (styleType === "dark") {
+                box.style.backgroundColor = "#161b22";
+                box.style.color = "#7ee787";
+                box.style.borderColor = "#30363d";
+                box.style.padding = "15px";
+            } else if (styleType === "invisible") {
+                box.style.backgroundColor = "transparent";
+                box.style.color = "inherit";
+                box.style.borderColor = "transparent";
+                box.style.padding = "0px";
+            } else {
+                box.style.backgroundColor = "#f6f8fa";
+                box.style.color = "#24292e";
+                box.style.borderColor = "#d1d5da";
+                box.style.padding = "15px";
+            }
+        });
+    }
+
+    function lockPanel() {
+        document.getElementById("customizer-panel").style.display = "none";
+        document.getElementById("lock-interface").style.display = "block";
+        document.getElementById("password-input").value = "";
+        renderContent();
+    }
+
+</script>
+
+</body>
+</html>
